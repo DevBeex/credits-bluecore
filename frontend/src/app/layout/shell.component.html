@@ -19,6 +19,17 @@
             <ion-label>Solicitudes</ion-label>
           </ion-item>
         </ion-menu-toggle>
+        <ion-item lines="none">
+        <ion-label>
+          <p>{{ auth.user()?.email }}</p>
+        </ion-label>
+        </ion-item>
+        <ion-menu-toggle auto-hide="false">
+          <ion-item button lines="none" (click)="logout()">
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+            <ion-label>Cerrar sesión</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
       </ion-list>
     </ion-content>
   </ion-menu>

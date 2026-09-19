@@ -15,7 +15,8 @@ import {
   IonToolbar,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { documentTextOutline } from 'ionicons/icons';
+import { documentTextOutline, logOutOutline } from 'ionicons/icons';
+import { AuthService } from '../core/auth/auth.service';
 
 @Component({
   selector: 'app-shell',
@@ -39,7 +40,8 @@ import { documentTextOutline } from 'ionicons/icons';
   ],
 })
 export class ShellComponent {
-  constructor() {
-    addIcons({ documentTextOutline });
+  constructor(readonly auth: AuthService,) {
+    addIcons({ documentTextOutline, logOutOutline })
   }
+  logout() { this.auth.logout(); }
 }
