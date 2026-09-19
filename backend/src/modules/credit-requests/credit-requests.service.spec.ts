@@ -10,10 +10,13 @@ describe('CreditRequestsService', () => {
   const save = jest.fn();
   const create = jest.fn((value) => value);
   const user = { id: 'user-1', email: 'operator@bluecore.local' };
+  const findAndCount = jest.fn();
 
   beforeEach(async () => {
     save.mockReset();
     create.mockClear();
+    findAndCount.mockReset();
+    
     save.mockImplementation((value) => Promise.resolve({ id: 'req-1', ...value }));
 
     const module = await Test.createTestingModule({
@@ -21,7 +24,7 @@ describe('CreditRequestsService', () => {
         CreditRequestsService,
         {
           provide: getRepositoryToken(CreditRequest),
-          useValue: { create, save },
+          useValue: { create, save, findAndCount },
         },
       ],
     }).compile();
@@ -64,5 +67,38 @@ describe('CreditRequestsService', () => {
     expect(result.applicantDocument).toBe('8-123-456');
     expect(result.decidedById).toBeNull();
     expect(save).toHaveBeenCalled();
+  });
+  it('lists without a status filter when status is omitted', async () => {
+    findAndCount.mockResolvedValue([[], 0]);
+    await service.list({ page: 1, limit: 20 });
+    expect(findAndCount).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {},
+        skip: 0,
+        take: 20,
+        order: { createdAt: 'DESC' },
+      }),
+    );
+  });
+  it('filters by status and paginates', async () => {
+    findAndCount.mockResolvedValue([[{ id: 'req-1' }], 21]);
+    const result = await service.list({
+      status: CreditRequestStatus.PENDING,
+      page: 2,
+      limit: 10,
+    });
+    expect(findAndCount).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { status: CreditRequestStatus.PENDING },
+        skip: 10,
+        take: 10,
+      }),
+    );
+    expect(result.meta).toEqual({
+      page: 2,
+      limit: 10,
+      total: 21,
+      totalPages: 3,
+    });
   });
 });

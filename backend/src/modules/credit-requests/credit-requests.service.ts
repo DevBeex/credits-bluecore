@@ -7,10 +7,13 @@ import {
   CREDIT_AMOUNT_MIN,
   CREDIT_TERM_MAX,
   CREDIT_TERM_MIN,
+  LIST_LIMIT_DEFAULT,
+  LIST_PAGE_DEFAULT,
 } from './credit-request.constants';
 import { CreditRequest } from './credit-request.entity';
 import { CreditRequestStatus } from './credit-request-status.enum';
 import { CreateCreditRequestDto } from './dto/create-credit-request.dto';
+import { ListCreditRequestsQueryDto } from './dto/list-credit-requests.query.dto';
 
 @Injectable()
 export class CreditRequestsService {
@@ -18,7 +21,7 @@ export class CreditRequestsService {
     @InjectRepository(CreditRequest)
     private readonly requests: Repository<CreditRequest>,
   ) {}
-  
+
   async create(
     dto: CreateCreditRequestDto,
     user: AuthenticatedUser,
@@ -48,5 +51,26 @@ export class CreditRequestsService {
       decidedAt: null,
     });
     return this.requests.save(request);
+  }
+
+  async list(query: ListCreditRequestsQueryDto) {
+    const page = query.page ?? LIST_PAGE_DEFAULT;
+    const limit = query.limit ?? LIST_LIMIT_DEFAULT;
+    const where = query.status ? { status: query.status } : {};
+    const [data, total] = await this.requests.findAndCount({
+      where,
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit) || 0,
+      },
+    };
   }
 }
