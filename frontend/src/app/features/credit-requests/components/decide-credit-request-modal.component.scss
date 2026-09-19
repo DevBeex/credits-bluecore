@@ -1,0 +1,36 @@
+.summary {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.summary p {
+  margin: 0;
+}
+
+.summary p + p {
+  margin-top: 0.25rem;
+  color: #64748b;
+}
+
+ion-modal {
+  --width: min(480px, 100%);
+  --border-radius: 16px;
+}
+
+ion-toolbar {
+  --padding-end: 6px;
+}
+
+ion-buttons ion-icon {
+  font-size: 1.45rem;
+}
+
+.field {
+  margin-bottom: 0.65rem;
+}
+
+form app-button {
+  margin-top: 0.85rem;
+}

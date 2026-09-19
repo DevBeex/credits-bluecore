@@ -10,6 +10,8 @@ import { Component, input } from '@angular/core';
       [class.app-button--ghost]="variant() === 'ghost'"
       [class.app-button--toolbar]="variant() === 'toolbar'"
       [class.app-button--icon]="variant() === 'icon'"
+      [class.app-button--success]="variant() === 'success'"
+      [class.app-button--danger]="variant() === 'danger'"
       [class.app-button--block]="expand() === 'block'"
       [attr.type]="type()"
       [attr.aria-label]="ariaLabel()"
@@ -79,6 +81,16 @@ import { Component, input } from '@angular/core';
       color: #ffffff;
     }
 
+    .app-button--success {
+      background: var(--app-status-approved);
+      color: #ffffff;
+    }
+
+    .app-button--danger {
+      background: var(--app-status-rejected);
+      color: #ffffff;
+    }
+
     .app-button--block {
       width: 100%;
     }
@@ -87,7 +99,7 @@ import { Component, input } from '@angular/core';
 export class AppButtonComponent {
   readonly type = input<'button' | 'submit'>('button');
   readonly variant = input<
-    'primary' | 'outline' | 'ghost' | 'toolbar' | 'icon'
+    'primary' | 'outline' | 'ghost' | 'toolbar' | 'icon' | 'success' | 'danger'
   >('primary');
   readonly expand = input<'inline' | 'block'>('inline');
   readonly disabled = input(false);

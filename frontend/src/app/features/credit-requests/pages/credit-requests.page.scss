@@ -57,6 +57,20 @@
   margin: 0.25rem 0 0;
 }
 
+.request-card__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.request-card__comment {
+  margin: 0.75rem 0 0;
+  color: #475569;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
 .request-card--skeleton {
   display: grid;
   gap: 0.65rem;

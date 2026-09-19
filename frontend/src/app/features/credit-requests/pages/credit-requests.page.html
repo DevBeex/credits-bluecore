@@ -73,6 +73,28 @@
                 [label]="statusLabel(item.status)"
               />
             </div>
+            @if (item.status === 'PENDING') {
+              <div class="request-card__actions">
+                <app-button
+                  variant="primary"
+                  expand="block"
+                  type="button"
+                  (click)="openDecision(item, 'APPROVED')"
+                >
+                  Aprobar
+                </app-button>
+                <app-button
+                  variant="danger"
+                  expand="block"
+                  type="button"
+                  (click)="openDecision(item, 'REJECTED')"
+                >
+                  Rechazar
+                </app-button>
+              </div>
+            } @else if (item.decisionComment) {
+              <p class="request-card__comment">{{ item.decisionComment }}</p>
+            }
           </article>
         }
       </div>
@@ -92,6 +114,15 @@
   (closed)="closeCreate()"
   (created)="onCreated()"
   (failed)="onCreateFailed($event)"
+/>
+
+<app-decide-credit-request-modal
+  [isOpen]="decisionOpen()"
+  [request]="decisionRequest()"
+  [action]="decisionAction()"
+  (closed)="closeDecision()"
+  (decided)="onDecided($event)"
+  (failed)="onDecisionFailed($event)"
 />
 
 <app-dialog

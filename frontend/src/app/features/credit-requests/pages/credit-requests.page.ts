@@ -17,6 +17,10 @@ import { AppPaginationComponent } from '../../../shared/ui/app-pagination.compon
 import { AppSelectComponent } from '../../../shared/ui/app-select.component';
 import { AppStatusBadgeComponent } from '../../../shared/ui/app-status-badge.component';
 import { CreateCreditRequestModalComponent } from '../components/create-credit-request-modal.component';
+import {
+  DecideCreditRequestModalComponent,
+  type DecisionAction,
+} from '../components/decide-credit-request-modal.component';
 import { LIST_LIMIT } from '../credit-request.constants';
 import type { CreditRequest, CreditRequestStatus } from '../credit-request.models';
 import { CreditRequestsApi } from '../credit-requests.api';
@@ -43,6 +47,7 @@ type StatusFilter = CreditRequestStatus | 'ALL';
     AppPaginationComponent,
     AppStatusBadgeComponent,
     CreateCreditRequestModalComponent,
+    DecideCreditRequestModalComponent,
   ],
 })
 export class CreditRequestsPage implements OnInit {
@@ -61,6 +66,9 @@ export class CreditRequestsPage implements OnInit {
   readonly loading = signal(false);
   readonly listError = signal<string | null>(null);
   readonly createOpen = signal(false);
+  readonly decisionOpen = signal(false);
+  readonly decisionRequest = signal<CreditRequest | null>(null);
+  readonly decisionAction = signal<DecisionAction>('APPROVED');
   readonly dialogOpen = signal(false);
   readonly dialogKind = signal<'success' | 'error'>('success');
   readonly dialogTitle = signal('');
@@ -136,6 +144,32 @@ export class CreditRequestsPage implements OnInit {
 
   onCreateFailed(message: string): void {
     this.openDialog('error', 'No se pudo crear la solicitud', message);
+  }
+
+  openDecision(item: CreditRequest, action: DecisionAction): void {
+    this.decisionRequest.set(item);
+    this.decisionAction.set(action);
+    this.decisionOpen.set(true);
+  }
+
+  closeDecision(): void {
+    this.decisionOpen.set(false);
+    this.decisionRequest.set(null);
+  }
+
+  onDecided(action: DecisionAction): void {
+    this.closeDecision();
+    this.load();
+    this.openDialog(
+      'success',
+      action === 'APPROVED' ? 'Solicitud aprobada' : 'Solicitud rechazada',
+      'La decisión quedó registrada y el listado se actualizó.',
+    );
+  }
+
+  onDecisionFailed(message: string): void {
+    this.load();
+    this.openDialog('error', 'No se pudo registrar la decisión', message);
   }
 
   closeDialog(): void {

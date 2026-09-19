@@ -4,3 +4,4 @@ export const CREDIT_TERM_MIN = 6;
 export const CREDIT_TERM_MAX = 60;
 export const APPLICANT_DOCUMENT_MAX = 30;
 export const LIST_LIMIT = 10;
+export const DECISION_COMMENT_MAX = 1000;

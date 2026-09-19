@@ -13,6 +13,11 @@ export type CreateCreditRequestPayload = {
   termMonths: number;
 };
 
+export type UpdateCreditRequestStatusPayload = {
+  status: Exclude<CreditRequestStatus, 'PENDING'>;
+  comment: string;
+};
+
 @Injectable({ providedIn: 'root' })
 export class CreditRequestsApi {
   private readonly url = `${environment.apiUrl}/credit-requests`;
@@ -33,5 +38,9 @@ export class CreditRequestsApi {
 
   create(payload: CreateCreditRequestPayload) {
     return this.http.post<CreditRequest>(this.url, payload);
+  }
+
+  updateStatus(id: string, payload: UpdateCreditRequestStatusPayload) {
+    return this.http.patch<CreditRequest>(`${this.url}/${id}/status`, payload);
   }
 }
