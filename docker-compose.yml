@@ -1,0 +1,36 @@
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      CI: "true"
+      FORCE_COLOR: "1"
+    tty: true
+    restart: "no"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - ./.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      tests:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      tests:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
+    restart: unless-stopped
