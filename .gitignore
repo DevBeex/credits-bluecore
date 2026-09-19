@@ -1,0 +1,9 @@
+node_modules/
+dist/
+www/
+.angular/
+coverage/
+
+.env
+.env.*
+!.env.example
