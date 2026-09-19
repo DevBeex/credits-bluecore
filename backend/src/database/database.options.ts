@@ -28,7 +28,8 @@ export function createDatabaseOptions(env: Environment): DataSourceOptions {
     migrationsRun: false,
     synchronize: false,
     dropSchema: false,
-
+    uuidExtension: 'pgcrypto',
+    installExtensions: false,
     logging: false,
     extra: {
       max: 5,
