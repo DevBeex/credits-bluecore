@@ -11,6 +11,10 @@ const environmentSchema = z.object({
   DB_USERNAME: z.string().trim().min(1),
   DB_PASSWORD: z.string().min(1),
   DB_CA_CERT_PATH: z.string().trim().min(1),
+  JWT_SECRET: z.string().min(32),
+  JWT_EXPIRES_IN: z.string().trim().min(1).default('8h'),
+  DEMO_USER_EMAIL: z.string().trim().email().toLowerCase(),
+  DEMO_USER_PASSWORD: z.string().min(8).max(72),
 });
 
 export type Environment = z.infer<typeof environmentSchema>;
