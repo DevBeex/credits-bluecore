@@ -6,3 +6,4 @@ export const APPLICANT_DOCUMENT_MAX = 30;
 export const LIST_PAGE_DEFAULT = 1;
 export const LIST_LIMIT_DEFAULT = 20;
 export const LIST_LIMIT_MAX = 100;
+export const DECISION_COMMENT_MAX = 1000;

@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreditRequest } from './credit-request.entity';
@@ -11,11 +11,17 @@ describe('CreditRequestsService', () => {
   const create = jest.fn((value) => value);
   const user = { id: 'user-1', email: 'operator@bluecore.local' };
   const findAndCount = jest.fn();
+  const update = jest.fn();
+  const findOneBy = jest.fn();
+  const findOneByOrFail = jest.fn();
 
   beforeEach(async () => {
     save.mockReset();
     create.mockClear();
     findAndCount.mockReset();
+    update.mockReset();
+    findOneBy.mockReset();
+    findOneByOrFail.mockReset();
     
     save.mockImplementation((value) => Promise.resolve({ id: 'req-1', ...value }));
 
@@ -24,7 +30,7 @@ describe('CreditRequestsService', () => {
         CreditRequestsService,
         {
           provide: getRepositoryToken(CreditRequest),
-          useValue: { create, save, findAndCount },
+          useValue: { create, save, findAndCount, update, findOneBy, findOneByOrFail },
         },
       ],
     }).compile();
@@ -100,5 +106,49 @@ describe('CreditRequestsService', () => {
       total: 21,
       totalPages: 3,
     });
+  });
+
+  const decision = {
+    status: CreditRequestStatus.APPROVED as const,
+    comment: '  Cumple política  ',
+  };
+  it('rejects an empty decision comment', async () => {
+    await expect(
+      service.updateStatus('req-1', { ...decision, comment: '   ' }, user),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(update).not.toHaveBeenCalled();
+  });
+  it('updates only while the request is pending', async () => {
+    update.mockResolvedValue({ affected: 1 });
+    findOneByOrFail.mockResolvedValue({
+      id: 'req-1',
+      status: CreditRequestStatus.APPROVED,
+    });
+    await service.updateStatus('req-1', decision, user);
+    expect(update).toHaveBeenCalledWith(
+      { id: 'req-1', status: CreditRequestStatus.PENDING },
+      expect.objectContaining({
+        status: CreditRequestStatus.APPROVED,
+        decisionComment: 'Cumple política',
+        decidedById: user.id,
+      }),
+    );
+  });
+  it('returns 404 when the request does not exist', async () => {
+    update.mockResolvedValue({ affected: 0 });
+    findOneBy.mockResolvedValue(null);
+    await expect(
+      service.updateStatus('req-1', decision, user),
+    ).rejects.toBeInstanceOf(NotFoundException);
+  });
+  it('returns 409 when the request was already decided', async () => {
+    update.mockResolvedValue({ affected: 0 });
+    findOneBy.mockResolvedValue({
+      id: 'req-1',
+      status: CreditRequestStatus.REJECTED,
+    });
+    await expect(
+      service.updateStatus('req-1', decision, user),
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 });

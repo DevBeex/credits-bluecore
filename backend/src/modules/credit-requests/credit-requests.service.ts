@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import type { AuthenticatedUser } from '../auth/authenticated-user';
@@ -14,6 +14,7 @@ import { CreditRequest } from './credit-request.entity';
 import { CreditRequestStatus } from './credit-request-status.enum';
 import { CreateCreditRequestDto } from './dto/create-credit-request.dto';
 import { ListCreditRequestsQueryDto } from './dto/list-credit-requests.query.dto';
+import { UpdateCreditRequestStatusDto } from './dto/update-credit-request.status.dto';
 
 @Injectable()
 export class CreditRequestsService {
@@ -72,5 +73,40 @@ export class CreditRequestsService {
         totalPages: Math.ceil(total / limit) || 0,
       },
     };
+  }
+
+  async updateStatus(
+    id: string,
+    dto: UpdateCreditRequestStatusDto,
+    user: AuthenticatedUser,
+  ): Promise<CreditRequest> {
+    const comment = dto.comment.trim();
+    if (!comment) {
+      throw new BadRequestException('El comentario es obligatorio');
+    }
+    if (
+      dto.status !== CreditRequestStatus.APPROVED &&
+      dto.status !== CreditRequestStatus.REJECTED
+    ) {
+      throw new BadRequestException('El estado de decisión no es válido');
+    }
+    const updateResult = await this.requests.update(
+      { id, status: CreditRequestStatus.PENDING },
+      {
+        status: dto.status,
+        decisionComment: comment,
+        decidedById: user.id,
+        decidedAt: new Date(),
+      },
+    );
+    if (updateResult.affected === 1) {
+      const updated = await this.requests.findOneByOrFail({ id });
+      return updated;
+    }
+    const existing = await this.requests.findOneBy({ id });
+    if (!existing) {
+      throw new NotFoundException('La solicitud de crédito no existe');
+    }
+    throw new ConflictException('La solicitud ya fue decidida');
   }
 }
