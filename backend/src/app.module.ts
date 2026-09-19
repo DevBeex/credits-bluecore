@@ -6,6 +6,7 @@ import { loadEnvironment } from './config/environment';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CreditRequestsModule } from './modules/credit-requests/credit-requests.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     DatabaseModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    CreditRequestsModule
   ],
   controllers: [AppController],
   providers: [AppService],
