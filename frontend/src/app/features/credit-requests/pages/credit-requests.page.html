@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Solicitudes de crédito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="page-container">
+    <div class="status-row">
+      <ion-chip class="status-chip pending">Pendiente</ion-chip>
+      <ion-chip class="status-chip approved">Aprobada</ion-chip>
+      <ion-chip class="status-chip rejected">Rechazada</ion-chip>
+    </div>
+
+    <div class="empty-card">
+      <h2>Aún no hay solicitudes para mostrar</h2>
+      <ion-note color="medium">
+        El formulario, los filtros y las decisiones se conectan en los próximos pasos.
+      </ion-note>
+    </div>
+  </div>
+</ion-content>
