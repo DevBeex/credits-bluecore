@@ -39,20 +39,3 @@
   margin: 0 auto;
   padding: 1rem;
 }
-
-.status-chip {
-  --color: #ffffff;
-  font-weight: 600;
-}
-
-.status-chip.pending {
-  --background: var(--app-status-pending);
-}
-
-.status-chip.approved {
-  --background: var(--app-status-approved);
-}
-
-.status-chip.rejected {
-  --background: var(--app-status-rejected);
-}

@@ -1,17 +1,105 @@
-.status-row {
+.list-toolbar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
 }
 
 .empty-card {
   background: var(--ion-item-background);
   border-radius: var(--app-radius);
-  padding: 1.5rem;
+  padding: 1.25rem 1.35rem 1.4rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 24px rgb(15 76 129 / 8%);
 }
 
 .empty-card h2 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.35rem;
   font-size: 1.15rem;
+}
+
+.request-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.request-card {
+  background: #ffffff;
+  border-radius: var(--app-radius);
+  padding: 1rem 1.1rem;
+  box-shadow: 0 8px 24px rgb(15 76 129 / 8%);
+}
+
+.request-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.request-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.request-card__amount {
+  margin: 0;
+  font-weight: 600;
+}
+
+.request-card__amount span,
+.request-card__date {
+  color: #6b7280;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.request-card__date {
+  margin: 0.25rem 0 0;
+}
+
+.request-card--skeleton {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.skeleton {
+  border-radius: 8px;
+  background: linear-gradient(90deg, #e8edf2 25%, #f7f9fb 50%, #e8edf2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+.skeleton--title {
+  height: 1rem;
+  width: 40%;
+}
+
+.skeleton--line {
+  height: 0.75rem;
+  width: 70%;
+}
+
+.skeleton--chip {
+  height: 1.4rem;
+  width: 5.5rem;
+  border-radius: 999px;
+  justify-self: end;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+ion-note {
+  display: block;
+  margin: 0.75rem 0;
+}
+
+ion-toolbar app-button {
+  margin-right: 0.5rem;
 }

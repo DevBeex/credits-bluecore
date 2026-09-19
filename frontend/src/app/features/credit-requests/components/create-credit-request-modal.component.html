@@ -1,0 +1,86 @@
+<ion-modal [isOpen]="isOpen()" (didDismiss)="onDismiss()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Nueva solicitud</ion-title>
+        <ion-buttons slot="end">
+          <app-button
+            variant="icon"
+            type="button"
+            ariaLabel="Cerrar"
+            (click)="closed.emit()"
+          >
+            <ion-icon name="close-outline"></ion-icon>
+          </app-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <p class="modal-hint">
+        Monto entre {{ amountMin | currency: 'USD' : 'symbol' : '1.0-0' }} y
+        {{ amountMax | currency: 'USD' : 'symbol' : '1.0-0' }}.
+      </p>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <ion-item>
+            <ion-input
+              label="Cédula"
+              labelPlacement="stacked"
+              placeholder="8-123-456"
+              formControlName="applicantDocument"
+            ></ion-input>
+          </ion-item>
+          <app-field-error
+            [control]="form.controls.applicantDocument"
+            [messages]="documentMessages"
+            [submitted]="submitted()"
+          />
+        </div>
+
+        <div class="field">
+          <ion-item>
+            <ion-input
+              label="Monto ({{ amountMin }} – {{ amountMax }})"
+              labelPlacement="stacked"
+              type="text"
+              inputmode="decimal"
+              placeholder="1500.00"
+              formControlName="amount"
+              (ionInput)="onAmountInput($event)"
+            ></ion-input>
+          </ion-item>
+          <app-field-error
+            [control]="form.controls.amount"
+            [messages]="amountMessages"
+            [submitted]="submitted()"
+          />
+        </div>
+
+        <div class="field">
+          <ion-item>
+            <ion-input
+              label="Plazo en meses ({{ termMin }} – {{ termMax }})"
+              labelPlacement="stacked"
+              type="text"
+              inputmode="numeric"
+              placeholder="12"
+              formControlName="termMonths"
+              (ionInput)="onTermInput($event)"
+            ></ion-input>
+          </ion-item>
+          <app-field-error
+            [control]="form.controls.termMonths"
+            [messages]="termMessages"
+            [submitted]="submitted()"
+          />
+        </div>
+
+        <app-button type="submit" expand="block" [disabled]="form.invalid || creating()">
+          {{ creating() ? 'Guardando…' : 'Crear solicitud' }}
+        </app-button>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

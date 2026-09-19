@@ -35,13 +35,13 @@
         <ion-note color="danger">{{ message }}</ion-note>
       }
 
-      <ion-button
-        expand="block"
+      <app-button
         type="submit"
+        expand="block"
         [disabled]="submitting()"
       >
         {{ submitting() ? 'Entrando…' : 'Entrar' }}
-      </ion-button>
+      </app-button>
     </form>
   </div>
 </ion-content>

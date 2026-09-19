@@ -1,0 +1,34 @@
+.modal-hint {
+  margin: 0 0 1rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+ion-modal {
+  --width: min(480px, 100%);
+  --border-radius: 16px;
+}
+
+ion-toolbar {
+  --padding-end: 6px;
+}
+
+ion-title {
+  padding-inline-end: 0.5rem;
+}
+
+ion-buttons ion-icon {
+  font-size: 1.45rem;
+}
+
+.field {
+  margin-bottom: 0.65rem;
+}
+
+.field ion-item {
+  --inner-padding-end: 8px;
+}
+
+form app-button {
+  margin-top: 0.85rem;
+}

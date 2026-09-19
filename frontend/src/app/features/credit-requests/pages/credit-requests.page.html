@@ -4,22 +4,100 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Solicitudes de crédito</ion-title>
+    <ion-buttons slot="end">
+      <app-button variant="toolbar" type="button" (click)="openCreate()">
+        Nueva solicitud
+      </app-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="page-container">
-    <div class="status-row">
-      <ion-chip class="status-chip pending">Pendiente</ion-chip>
-      <ion-chip class="status-chip approved">Aprobada</ion-chip>
-      <ion-chip class="status-chip rejected">Rechazada</ion-chip>
+    <div class="list-toolbar">
+      <app-select
+        label="Filtrar por estado"
+        [options]="statusOptions"
+        [value]="statusFilter()"
+        (valueChange)="setFilter($event)"
+      />
     </div>
 
-    <div class="empty-card">
-      <h2>Aún no hay solicitudes para mostrar</h2>
-      <ion-note color="medium">
-        El formulario, los filtros y las decisiones se conectan en los próximos pasos.
-      </ion-note>
-    </div>
+    @if (loading()) {
+      <div class="request-list">
+        @for (item of skeletons; track item) {
+          <div class="request-card request-card--skeleton">
+            <div class="skeleton skeleton--title"></div>
+            <div class="skeleton skeleton--line"></div>
+            <div class="skeleton skeleton--chip"></div>
+          </div>
+        }
+      </div>
+    } @else if (listError(); as message) {
+      <div class="empty-card">
+        <h2>No se pudo cargar el listado</h2>
+        <ion-note color="danger">{{ message }}</ion-note>
+        <app-button variant="outline" type="button" (click)="load()">
+          Reintentar
+        </app-button>
+      </div>
+    } @else if (items().length === 0) {
+      <div class="empty-card">
+        <h2>No hay solicitudes</h2>
+        <ion-note color="medium">
+          Crea una o cambia el filtro de estado.
+        </ion-note>
+      </div>
+      <app-pagination
+        [page]="page()"
+        [limit]="pageSize"
+        [total]="total()"
+        [shown]="items().length"
+        (pageChange)="goToPage($event)"
+      />
+    } @else {
+      <div class="request-list">
+        @for (item of items(); track item.id) {
+          <article class="request-card">
+            <div class="request-card__row">
+              <div>
+                <h3>{{ item.applicantDocument }}</h3>
+                <p class="request-card__amount">
+                  {{ amountNumber(item.amount) | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  <span>· {{ item.termMonths }} meses</span>
+                </p>
+                <p class="request-card__date">{{ item.createdAt | date: 'short' }}</p>
+              </div>
+              <app-status-badge
+                [status]="item.status"
+                [label]="statusLabel(item.status)"
+              />
+            </div>
+          </article>
+        }
+      </div>
+      <app-pagination
+        [page]="page()"
+        [limit]="pageSize"
+        [total]="total()"
+        [shown]="items().length"
+        (pageChange)="goToPage($event)"
+      />
+    }
   </div>
 </ion-content>
+
+<app-create-credit-request-modal
+  [isOpen]="createOpen()"
+  (closed)="closeCreate()"
+  (created)="onCreated()"
+  (failed)="onCreateFailed($event)"
+/>
+
+<app-dialog
+  [isOpen]="dialogOpen()"
+  [kind]="dialogKind()"
+  [title]="dialogTitle()"
+  [message]="dialogMessage()"
+  (closed)="closeDialog()"
+/>

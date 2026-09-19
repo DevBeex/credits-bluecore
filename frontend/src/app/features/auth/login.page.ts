@@ -3,7 +3,6 @@ import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
-  IonButton,
   IonContent,
   IonHeader,
   IonInput,
@@ -15,6 +14,7 @@ import {
 } from '@ionic/angular';
 import { AuthService } from '../../core/auth/auth.service';
 import type { ApiErrorBody } from '../../core/auth/auth.models';
+import { AppButtonComponent } from '../../shared/ui/app-button.component';
 
 @Component({
   selector: 'app-login',
@@ -29,8 +29,8 @@ import type { ApiErrorBody } from '../../core/auth/auth.models';
     IonList,
     IonItem,
     IonInput,
-    IonButton,
-    IonNote, 
+    IonNote,
+    AppButtonComponent,
   ],
 })
 export class LoginPage {
